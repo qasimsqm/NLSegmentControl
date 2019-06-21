@@ -93,14 +93,14 @@ public class NLSegmentControl: UIView {
     
     /// Text attributes to apply to labels of the unselected segments
     public var titleTextAttributes: [String: AnyObject] = [
-        NSFontAttributeName: UIFont.systemFont(ofSize: 14),
-        NSForegroundColorAttributeName: UIColor.black
+        convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 14),
+        convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black
         ]
     
     /// Text attributes to apply to labels of the selected segments
     public var selectedTitleTextAttributes: [String:AnyObject] = [
-        NSFontAttributeName: UIFont.systemFont(ofSize: 14),
-        NSForegroundColorAttributeName: UIColor.black
+        convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 14),
+        convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black
         ]
     
     /// Vertical divider between the segments. Default is false
@@ -196,7 +196,7 @@ public class NLSegmentControl: UIView {
         addSubview(selectionBox)
         addSubview(segmentCollection)
         addSubview(selectionIndicator)
-        bringSubview(toFront: selectionIndicator)
+        bringSubviewToFront(selectionIndicator)
     }
     
     public override func updateConstraints() {
@@ -243,7 +243,7 @@ public extension NLSegmentControl {
      - parameter index: Index of the segment to select.
      - parameter animated: A boolean to specify whether the change should be animated or not
      */
-    public func setSelectedSegmentIndex(_ index: Int, animated: Bool) {
+    func setSelectedSegmentIndex(_ index: Int, animated: Bool) {
         guard index < itemsCount else {
             return
         }
@@ -262,7 +262,7 @@ public extension NLSegmentControl {
         }
     }
     
-    public func reloadSegments() {
+    func reloadSegments() {
         layoutIfNeeded()
         calcSegmentWidth()
         segmentCollection.reloadData()
@@ -406,9 +406,9 @@ extension NLSegmentControl {
             return attrTitle
         }
         if selected {
-            return NSAttributedString(string: title, attributes: selectedTitleTextAttributes)
+            return NSAttributedString(string: title, attributes: convertToOptionalNSAttributedStringKeyDictionary(selectedTitleTextAttributes))
         } else {
-            return NSAttributedString(string: title, attributes: titleTextAttributes)
+            return NSAttributedString(string: title, attributes: convertToOptionalNSAttributedStringKeyDictionary(titleTextAttributes))
         }
     }
 }
@@ -598,7 +598,7 @@ fileprivate extension UIButton {
         
         let imageWidth = imageView?.image?.size.width ?? 0
         let imageHeight = imageView?.image?.size.height ?? 0
-        let labelSize = NSString(string: titleLabel?.text ?? "").size(attributes: [NSFontAttributeName: titleLabel?.font ?? UIFont.systemFont(ofSize: 12)])
+        let labelSize = NSString(string: titleLabel?.text ?? "").size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): titleLabel?.font ?? UIFont.systemFont(ofSize: 12)]))
         let labelWidth = labelSize.width
         let labelHeight = labelSize.height
         
@@ -633,3 +633,14 @@ fileprivate extension UIButton {
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}

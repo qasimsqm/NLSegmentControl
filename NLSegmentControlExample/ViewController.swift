@@ -38,8 +38,8 @@ class ViewController: UIViewController {
         segment.verticalDividerWidth = 1
         segment.verticalDividerInset = 12
         
-        segment.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.black]
-        segment.selectedTitleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.red]
+        segment.titleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 14.0), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+        segment.selectedTitleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 14.0), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.red]
         
         segment.indexChangedHandler = {
             (index) in
@@ -58,8 +58,8 @@ class ViewController: UIViewController {
         sbSegment.selectionIndicatorPosition = .top
         sbSegment.selectionIndicatorStyle = .box
         sbSegment.selectionBoxColor = .black
-        sbSegment.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17.0), NSForegroundColorAttributeName: UIColor.blue]
-        sbSegment.selectedTitleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17.0), NSForegroundColorAttributeName: UIColor.yellow]
+        sbSegment.titleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 17.0), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.blue]
+        sbSegment.selectedTitleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 17.0), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.yellow]
         sbSegment.selectionIndicatorEdgeInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         sbSegment.reloadSegments()
         
@@ -100,8 +100,8 @@ class ViewController: UIViewController {
         //        imageTextSegment.imageTitleSpace = 10
         //        imageTextSegment.enableVerticalDivider = true
         imageTextSegment.selectionIndicatorStyle = .textWidthStripe
-        imageTextSegment.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.black]
-        imageTextSegment.selectedTitleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17.0), NSForegroundColorAttributeName: UIColor(red: 52/255.0, green: 181/255.0, blue: 229/255.0, alpha: 1.0)]
+        imageTextSegment.titleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 17), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+        imageTextSegment.selectedTitleTextAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 17.0), convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor(red: 52/255.0, green: 181/255.0, blue: 229/255.0, alpha: 1.0)]
         
         
         imageTextSegment.nl_marginTop(toView: imageSegment, margin: 20)
@@ -125,15 +125,15 @@ class ViewController: UIViewController {
             if let cate = segment as? Category {
                 let title = cate.categoryTitle ?? ""
                 let desc = cate.categoryDesc != nil ? "\n" + cate.categoryDesc! : ""
-                let titleRange = NSRange(location: 0, length: title.characters.count)
-                let descRange = NSRange(location: title.characters.count, length: desc.characters.count)
+                let titleRange = NSRange(location: 0, length: title.count)
+                let descRange = NSRange(location: title.count, length: desc.count)
                 let attr = NSMutableAttributedString(string: title + desc)
-                attr.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 18), range: titleRange)
-                attr.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 10), range: descRange)
+                attr.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: 18), range: titleRange)
+                attr.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: 10), range: descRange)
                 if selected {
-                    attr.addAttribute(NSForegroundColorAttributeName, value: UIColor.red, range: descRange)
+                    attr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: descRange)
                 } else {
-                    attr.addAttribute(NSForegroundColorAttributeName, value: UIColor.blue, range: descRange)
+                    attr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.blue, range: descRange)
                 }
                 return attr
             }
@@ -151,4 +151,9 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }
